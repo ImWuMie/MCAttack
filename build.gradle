@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+
+group 'dev.wumie'
+version '1.0-SNAPSHOT'
+
+configurations {
+    // include libraries
+    implementation.extendsFrom(library)
+    shadow.extendsFrom(library)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Extends
+    library 'com.google.code.gson:gson:2.10.1'
+    library 'org.apache.commons:commons-lang3:3.12.0'
+    library 'org.apache.logging.log4j:log4j-api:2.20.0'
+    library 'org.apache.logging.log4j:log4j-core:2.20.0'
+    library 'commons-codec:commons-codec:1.16.0'
+    library 'io.netty:netty-all:4.1.90.Final'
+}
+
+jar {
+    from "LICENSE"
+
+    manifest.attributes(
+            'Manifest-Version': 1.0,
+            'Main-Class': 'io.MCSTORM.Main',
+    )
+}
+
+shadowJar {
+    configurations = [ project.configurations.shadow ]
+
+    dependencies {
+        exclude {
+            it.moduleGroup == "org.slf4j"
+        }
+    }
+}
+
+build.dependsOn shadowJar
